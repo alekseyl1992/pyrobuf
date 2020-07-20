@@ -537,15 +537,12 @@ class Parser(object):
                 assert token.name not in scope, "'{}' is already defined in {}".format(
                     token.name, "'{}'".format(current_message.name) if current_message else "global scope")
 
-                # protoc allows value collisions with allow_alias option;
-                # revisit once options are implemented
-                assert token.value not in current.fields, "Enum value {} in '{}' is already used".format(
-                    token.value, current.name)
-
                 current.fields[token.value] = token
                 scope[token.name] = token
 
                 self._parse_enum_field(token, tokens)
+            elif token.token_type == 'OPTION':
+                continue
             else:
                 assert token.token_type == 'RBRACE', "unexpected {} token on line {}: '{}'".format(
                     token.token_type, token.line + 1, self.lines[token.line])
